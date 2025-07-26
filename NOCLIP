@@ -1,0 +1,28 @@
+local player = game.Players.LocalPlayer
+local rs = game:GetService("RunService")
+
+local connection
+
+connection = rs.Stepped:Connect(function()
+    if player.Character then
+        for _, part in pairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+-- Return cleanup function
+return function()
+    if connection then
+        connection:Disconnect()
+    end
+    if player.Character then
+        for _, part in pairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = true
+            end
+        end
+    end
+end
