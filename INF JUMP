@@ -1,0 +1,37 @@
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+local charConn
+local connection
+
+-- Fungsi untuk memperbarui humanoid saat respawn
+local function onCharacterAdded(char)
+	character = char
+	humanoid = char:WaitForChild("Humanoid")
+end
+
+charConn = player.CharacterAdded:Connect(onCharacterAdded)
+
+-- Deteksi saat tombol space ditekan langsung (lebih cepat dari JumpRequest)
+connection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
+	if input.KeyCode == Enum.KeyCode.Space then
+		if humanoid and humanoid:GetState() ~= Enum.HumanoidStateType.Dead then
+			humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+		end
+	end
+end)
+
+-- Cleanup function
+return function()
+	if connection then
+		connection:Disconnect()
+	end
+	if charConn then
+		charConn:Disconnect()
+	end
+end
