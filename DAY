@@ -1,0 +1,36 @@
+local lighting = game:GetService("Lighting")
+local rs = game:GetService("RunService")
+
+local TARGET_TIME = 12.0
+local TARGET_BRIGHTNESS = 0.9
+local TARGET_AMBIENT = Color3.fromRGB(190, 190, 190)
+local TARGET_OUTDOOR_AMBIENT = Color3.fromRGB(190, 190, 190)
+local FOG_DISTANCE = 9e9
+
+local connection
+
+local function applySettings()
+    lighting.ClockTime = TARGET_TIME
+    lighting.Brightness = TARGET_BRIGHTNESS
+    lighting.Ambient = TARGET_AMBIENT
+    lighting.OutdoorAmbient = TARGET_OUTDOOR_AMBIENT
+    lighting.FogEnd = FOG_DISTANCE
+    lighting.FogStart = FOG_DISTANCE - 1
+    lighting.ColorShift_Top = Color3.fromRGB(0, 0, 0)
+end
+
+connection = rs.Heartbeat:Connect(applySettings)
+
+-- Return cleanup function
+return function()
+    if connection then
+        connection:Disconnect()
+    end
+    -- Reset to defaults
+    lighting.ClockTime = 14
+    lighting.Brightness = 2
+    lighting.Ambient = Color3.fromRGB(0, 0, 0)
+    lighting.OutdoorAmbient = Color3.fromRGB(127, 127, 127)
+    lighting.FogEnd = 100000
+    lighting.FogStart = 0
+end
